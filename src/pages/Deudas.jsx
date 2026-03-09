@@ -16,6 +16,25 @@ export default function Deudas() {
     });
   };
 
+  const pagarDeuda = (id) => {
+  const nuevasDeudas = deudas.map((d) =>
+    d.id === id ? { ...d, estado: "pagado" } : d
+  );
+
+  setDeudas(nuevasDeudas);
+};
+
+const totalDeudas = deudas.reduce((acc, d) => acc + Number(d.monto), 0);
+
+const totalPendiente = deudas
+  .filter((d) => d.estado === "pendiente")
+  .reduce((acc, d) => acc + Number(d.monto), 0);
+
+const totalPagado = deudas
+  .filter((d) => d.estado === "pagado")
+  .reduce((acc, d) => acc + Number(d.monto), 0);
+
+
   const agregarDeuda = () => {
     const nuevaDeuda = {
       id: Date.now(),
@@ -37,6 +56,27 @@ export default function Deudas() {
       <h1 className="page-title">
         <FaMoneyBillWave /> Deudas
       </h1>
+
+<div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+  
+  <div className="card">
+    <h4>Total Deudas</h4>
+    <p>${totalDeudas}</p>
+  </div>
+
+  <div className="card">
+    <h4>Pendiente</h4>
+    <p style={{ color: "red" }}>${totalPendiente}</p>
+  </div>
+
+  <div className="card">
+    <h4>Pagado</h4>
+    <p style={{ color: "green" }}>${totalPagado}</p>
+  </div>
+
+</div>
+
+
 
       <div className="card">
         <h3>Agregar nueva deuda</h3>
@@ -96,6 +136,7 @@ export default function Deudas() {
               <th>Monto</th>
               <th>Fecha</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
 
@@ -105,9 +146,33 @@ export default function Deudas() {
                 <td>{d.acreedor}</td>
                 <td>${d.monto}</td>
                 <td>{d.fecha}</td>
-                <td style={{ color: "red", fontWeight: "bold" }}>
-                  {d.estado}
+                <td style={{
+    color: d.estado === "pagado" ? "green" : "red",
+    fontWeight: "bold"
+  }}
+>
+  {d.estado}
                 </td>
+
+
+                <td>
+                    {d.estado === "pendiente" && (
+                      <button
+                        onClick={() => pagarDeuda(d.id)}
+                        style={{
+                          background: "#22c55e",
+                          border: "none",
+                          padding: "6px 10px",
+                          color: "white",
+                          borderRadius: "6px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        Pagar
+                      </button>
+                    )}
+                  </td>
+                
               </tr>
             ))}
           </tbody>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaPlusCircle, FaMoneyBillWave } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
 export default function Deudas() {
   const [deudas, setDeudas] = useState([]);
@@ -8,6 +9,18 @@ export default function Deudas() {
     monto: "",
     fecha: "",
   });
+
+  useEffect(() => {
+  const data = localStorage.getItem("deudas");
+
+  if (data) {
+    setDeudas(JSON.parse(data));
+  }
+}, []);
+
+useEffect(() => {
+  localStorage.setItem("deudas", JSON.stringify(deudas));
+}, [deudas]);
 
   const handleChange = (e) => {
     setForm({

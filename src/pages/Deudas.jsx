@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { FaPlusCircle, FaMoneyBillWave } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
@@ -21,6 +21,18 @@ export default function Deudas() {
 useEffect(() => {
   localStorage.setItem("deudas", JSON.stringify(deudas));
 }, [deudas]);
+
+const [editandoId, setEditandoId] = useState(null);
+
+const editarDeuda = (deuda) => {
+  setForm({
+    acreedor: deuda.acreedor,
+    monto: deuda.monto,
+    fecha: deuda.fecha
+  });
+
+  setEditandoId(deuda.id);
+};
 
   const handleChange = (e) => {
     setForm({
@@ -48,7 +60,7 @@ const totalPagado = deudas
   .reduce((acc, d) => acc + Number(d.monto), 0);
 
 
-  const agregarDeuda = () => {
+  /* const agregarDeuda = () => {
     const nuevaDeuda = {
       id: Date.now(),
       ...form,
@@ -62,7 +74,43 @@ const totalPagado = deudas
       monto: "",
       fecha: "",
     });
-  };
+  }; */
+
+const agregarDeuda = () => {
+
+  if (editandoId) {
+
+    const nuevasDeudas = deudas.map((d) =>
+      d.id === editandoId ? { ...d, ...form } : d
+    );
+
+    setDeudas(nuevasDeudas);
+    setEditandoId(null);
+
+  } else {
+
+    const nuevaDeuda = {
+      id: Date.now(),
+      ...form,
+      estado: "pendiente",
+    };
+
+    setDeudas([...deudas, nuevaDeuda]);
+
+  }
+
+  setForm({
+    acreedor: "",
+    monto: "",
+    fecha: "",
+  });
+};
+
+
+  const eliminarDeuda = (id) => {
+  const nuevasDeudas = deudas.filter((d) => d.id !== id);
+  setDeudas(nuevasDeudas);
+};
 
   return (
     <div className="dashboard">
@@ -168,24 +216,51 @@ const totalPagado = deudas
                 </td>
 
 
-                <td>
-                    {d.estado === "pendiente" && (
-                      <button
-                        onClick={() => pagarDeuda(d.id)}
-                        style={{
-                          background: "#22c55e",
-                          border: "none",
-                          padding: "6px 10px",
-                          color: "white",
-                          borderRadius: "6px",
-                          cursor: "pointer"
-                        }}
-                      >
-                        Pagar
-                      </button>
-                    )}
-                  </td>
-                
+                <td style={{ display: "flex", gap: "6px" }}>
+
+  <button
+    onClick={() => pagarDeuda(d.id)}
+    style={{
+      background: "#22c55e",
+      border: "none",
+      padding: "6px 10px",
+      color: "white",
+      borderRadius: "6px",
+      cursor: "pointer"
+    }}
+  >
+    Pagar
+  </button>
+
+  <button
+    onClick={() => editarDeuda(d)}
+    style={{
+      background: "#3b82f6",
+      border: "none",
+      padding: "6px 10px",
+      color: "white",
+      borderRadius: "6px",
+      cursor: "pointer"
+    }}
+  >
+    Editar
+  </button>
+
+  <button
+    onClick={() => eliminarDeuda(d.id)}
+    style={{
+      background: "#ef4444",
+      border: "none",
+      padding: "6px 10px",
+      color: "white",
+      borderRadius: "6px",
+      cursor: "pointer"
+    }}
+  >
+    Eliminar
+  </button>
+
+</td>
               </tr>
             ))}
           </tbody>

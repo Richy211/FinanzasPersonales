@@ -1,9 +1,18 @@
-
-import { FaPlusCircle, FaMoneyBillWave } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { FaPlusCircle, FaMoneyBillWave } from "react-icons/fa";
+
 
 export default function Deudas() {
-  const [deudas, setDeudas] = useState([]);
+ const [deudas, setDeudas] = useState(() => {
+  const data = localStorage.getItem("deudas");
+  return data ? JSON.parse(data) : [];
+});
+useEffect(() => {
+  localStorage.setItem("deudas", JSON.stringify(deudas));
+}, [deudas]);
+
+
+
   const [form, setForm] = useState({
     acreedor: "",
     monto: "",
@@ -107,9 +116,18 @@ const agregarDeuda = () => {
 };
 
 
-  const eliminarDeuda = (id) => {
+/*   const eliminarDeuda = (id) => {
   const nuevasDeudas = deudas.filter((d) => d.id !== id);
   setDeudas(nuevasDeudas);
+}; */
+
+const eliminarDeuda = (id) => {
+  const confirmar = window.confirm("¿Estás seguro de eliminar esta deuda?");
+
+  if (confirmar) {
+    const nuevasDeudas = deudas.filter((d) => d.id !== id);
+    setDeudas(nuevasDeudas);
+  }
 };
 
   return (

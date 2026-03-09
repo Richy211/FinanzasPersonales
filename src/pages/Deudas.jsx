@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaPlusCircle, FaMoneyBillWave } from "react-icons/fa";
 
 export default function Deudas() {
   const [deudas, setDeudas] = useState([]);
@@ -33,41 +34,62 @@ export default function Deudas() {
 
   return (
     <div className="dashboard">
-      <h1 className="page-title">Deudas</h1>
+      <h1 className="page-title">
+        <FaMoneyBillWave /> Deudas
+      </h1>
 
       <div className="card">
-        <h3>Agregar deuda</h3>
+        <h3>Agregar nueva deuda</h3>
 
-        <input
-          type="text"
-          name="acreedor"
-          placeholder="Acreedor"
-          value={form.acreedor}
-          onChange={handleChange}
-        />
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <input
+            type="text"
+            name="acreedor"
+            placeholder="Acreedor"
+            value={form.acreedor}
+            onChange={handleChange}
+          />
 
-        <input
-          type="number"
-          name="monto"
-          placeholder="Monto"
-          value={form.monto}
-          onChange={handleChange}
-        />
+          <input
+            type="number"
+            name="monto"
+            placeholder="Monto"
+            value={form.monto}
+            onChange={handleChange}
+          />
 
-        <input
-          type="date"
-          name="fecha"
-          value={form.fecha}
-          onChange={handleChange}
-        />
+          <input
+            type="date"
+            name="fecha"
+            value={form.fecha}
+            onChange={handleChange}
+          />
 
-        <button onClick={agregarDeuda}>Agregar</button>
+          <button
+            onClick={agregarDeuda}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "10px 16px",
+              background: "#ef4444",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            <FaPlusCircle />
+            Agregar
+          </button>
+        </div>
       </div>
 
       <div className="card">
         <h3>Listado de deudas</h3>
 
-        <table>
+        <table style={{ width: "100%", marginTop: "10px" }}>
           <thead>
             <tr>
               <th>Acreedor</th>
@@ -83,7 +105,9 @@ export default function Deudas() {
                 <td>{d.acreedor}</td>
                 <td>${d.monto}</td>
                 <td>{d.fecha}</td>
-                <td>{d.estado}</td>
+                <td style={{ color: "red", fontWeight: "bold" }}>
+                  {d.estado}
+                </td>
               </tr>
             ))}
           </tbody>

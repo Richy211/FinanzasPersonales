@@ -2,6 +2,7 @@ import { useFinanceStore } from "../store/useFinanceStore";
 import KpiCard from "../components/ui/KpiCard";
 import { useNavigate } from "react-router-dom";
 import EvolucionMensualChart from "./EvolucionMensualChart";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -9,6 +10,22 @@ export default function Dashboard() {
   const totalGastos = useFinanceStore((state) => state.totalGastos);
   const totalDeudas = useFinanceStore((state) => state.totalDeudas);
   const balance = useFinanceStore((state) => state.balance);
+
+  const [totalDeudasPendientes, setTotalDeudasPendientes] = useState(0);
+
+useEffect(() => {
+  const data = localStorage.getItem("deudas");
+
+  if (data) {
+    const deudas = JSON.parse(data);
+
+    const pendientes = deudas
+      .filter((d) => d.estado === "pendiente")
+      .reduce((acc, d) => acc + Number(d.monto), 0);
+
+    setTotalDeudasPendientes(pendientes);
+  }
+}, []);
 
   console.log(totalIngresos, totalGastos, totalDeudas, balance);
 
@@ -50,8 +67,9 @@ export default function Dashboard() {
         >
           <KpiCard title="Ingresos Totales" value={totalIngresos} type="ingreso" color="#22c55e"/>
           <KpiCard title="Gastos Totales" value={totalGastos} type="gasto" color="#ef4444"/>
-          <KpiCard title="Deudas Pendientes" value={totalDeudas} type="deuda" color="#8b5cf6"/>
+
           <KpiCard title="Balance General" value={balance} type="balance" color="#3b82f6"/>
+          <KpiCard title="Deudas Pendientes"value={totalDeudasPendientes} type="deuda" color="#8b5cf6"/>
      </div>
 
       <div className="card" style={{ marginTop: "30px" }}>

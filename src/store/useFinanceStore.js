@@ -54,12 +54,15 @@ export const useFinanceStore = create(
           };
         }),
 
-      updateMovimiento: (index, movimientoActualizado) =>
+updateMovimiento: (index, movimientoActualizado) =>
   set((state) => {
     const nuevosMovimientos = [...state.movimientos];
     nuevosMovimientos[index] = movimientoActualizado;
 
-    return { movimientos: nuevosMovimientos };
+    return {
+      movimientos: nuevosMovimientos,
+      ...state.recalcularTotales(nuevosMovimientos),
+    };
   }),
 
     }),

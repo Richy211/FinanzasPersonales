@@ -5,6 +5,7 @@ import Deudas from "./pages/Deudas";
 import Reportes from "./pages/Reportes";
 import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
+import Ahorros from "./pages/Ahorros";
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         return "Deudas";
       case "/reportes":
         return "Reportes";
+      case "/ahorros":
+        return "Ahorros";
       default:
         return "";
     }
@@ -39,6 +42,7 @@ function App() {
             <Route path="/movimientos" element={<Movimientos />} />
             <Route path="/deudas" element={<Deudas />} />
             <Route path="/reportes" element={<Reportes />} />
+            <Route path="/ahorros" element={<Ahorros />} />
           </Routes>
         </div>
       </div>

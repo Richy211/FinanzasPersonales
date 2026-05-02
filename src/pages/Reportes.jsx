@@ -12,9 +12,8 @@ import {
 
 export default function Reportes() {
 
-  const { movimientos } = useFinanceStore();
+  const { movimientos, resetMovimientos } = useFinanceStore();
 
-  // Totales
   const ingresos = movimientos
     .filter(m => m.tipo === "ingreso")
     .reduce((t, m) => t + Number(m.monto), 0);
@@ -25,7 +24,6 @@ export default function Reportes() {
 
   const balance = ingresos - gastos;
 
-  // Agrupar gastos por categoría
   const gastosPorCategoria = {};
 
   movimientos
@@ -42,17 +40,9 @@ export default function Reportes() {
     value: gastosPorCategoria[cat]
   }));
 
-  const COLORS = [
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#AA66CC"
-  ];
+  const COLORS = ["#0088FE","#00C49F","#FFBB28","#FF8042","#AA66CC"];
 
-  // Exportar Excel
   function exportarExcel() {
-
     if (!movimientos.length) {
       alert("No hay movimientos para exportar");
       return;
@@ -70,8 +60,14 @@ export default function Reportes() {
     const libro = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(libro, hoja, "Movimientos");
-
     XLSX.writeFile(libro, "reporte_finanzas.xlsx");
+  }
+
+  function reiniciarMes() {
+    const confirmar = confirm("¿Seguro que deseas cerrar el mes?");
+    if (!confirmar) return;
+
+    resetMovimientos();
   }
 
   return (
@@ -80,7 +76,6 @@ export default function Reportes() {
       <h1 className="page-title">Reporte Financiero</h1>
 
       <div className="card">
-
         <h3>Ingresos</h3>
         <p>${ingresos}</p>
 
@@ -94,6 +89,20 @@ export default function Reportes() {
           Descargar Reporte Excel
         </button>
 
+        <button
+          className="btn-danger"
+          onClick={reiniciarMes}
+          style={{
+            marginTop: "15px",
+            marginLeft: "10px",
+            padding: "10px 20px",
+            fontSize: "16px"
+          }}
+        >
+          Cerrar Mes / Reiniciar
+        </button>
+
+
       </div>
 
       <div className="card">
@@ -101,7 +110,6 @@ export default function Reportes() {
 
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
-
             <Pie
               data={data}
               dataKey="value"
@@ -110,19 +118,14 @@ export default function Reportes() {
               label
             >
               {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={COLORS[index % COLORS.length]}
-                />
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
 
             <Tooltip />
             <Legend />
-
           </PieChart>
         </ResponsiveContainer>
-
       </div>
 
     </div>

@@ -5,6 +5,7 @@ export const useFinanceStore = create(
   persist(
     (set, get) => ({
       movimientos: [],
+      ahorros: [], // Array que ya tenías definido
 
       totalIngresos: 0,
       totalGastos: 0,
@@ -32,10 +33,10 @@ export const useFinanceStore = create(
         };
       },
 
+      // --- Gestión de Movimientos ---
       addMovimiento: (movimiento) =>
         set((state) => {
           const nuevosMovimientos = [...state.movimientos, movimiento];
-
           return {
             movimientos: nuevosMovimientos,
             ...state.recalcularTotales(nuevosMovimientos),
@@ -47,24 +48,42 @@ export const useFinanceStore = create(
           const nuevosMovimientos = state.movimientos.filter(
             (_, i) => i !== index
           );
-
           return {
             movimientos: nuevosMovimientos,
             ...state.recalcularTotales(nuevosMovimientos),
           };
         }),
 
-updateMovimiento: (index, movimientoActualizado) =>
-  set((state) => {
-    const nuevosMovimientos = [...state.movimientos];
-    nuevosMovimientos[index] = movimientoActualizado;
+      updateMovimiento: (index, movimientoActualizado) =>
+        set((state) => {
+          const nuevosMovimientos = [...state.movimientos];
+          nuevosMovimientos[index] = movimientoActualizado;
+          return {
+            movimientos: nuevosMovimientos,
+            ...state.recalcularTotales(nuevosMovimientos),
+          };
+        }),
 
-    return {
-      movimientos: nuevosMovimientos,
-      ...state.recalcularTotales(nuevosMovimientos),
-    };
-  }),
+      // --- Gestión de Ahorros (Lo que faltaba) ---
+      addAhorro: (ahorro) =>
+        set((state) => ({
+          ahorros: [...state.ahorros, ahorro],
+        })),
 
+      removeAhorro: (index) =>
+        set((state) => ({
+          ahorros: state.ahorros.filter((_, i) => i !== index),
+        })),
+
+      // 🔥 CIERRE DE MES
+      resetMovimientos: () =>
+        set((state) => {
+          const nuevosMovimientos = [];
+          return {
+            movimientos: nuevosMovimientos,
+            ...state.recalcularTotales(nuevosMovimientos),
+          };
+        }),
     }),
     {
       name: "finance-storage",
@@ -72,7 +91,6 @@ updateMovimiento: (index, movimientoActualizado) =>
       onRehydrateStorage: () => (state) => {
         if (state?.movimientos) {
           const totales = state.recalcularTotales(state.movimientos);
-
           state.totalIngresos = totales.totalIngresos;
           state.totalGastos = totales.totalGastos;
           state.totalDeudas = totales.totalDeudas;

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { FaChartPie, FaExchangeAlt, FaHandHoldingUsd, FaChartBar } from "react-icons/fa";
+import { FaPiggyBank } from "react-icons/fa";
 
 export default function Sidebar() {
   return (
@@ -25,6 +26,11 @@ export default function Sidebar() {
         <NavLink to="/reportes" style={navLinkStyle}>
           <FaChartBar style={styles.icon} />
           Reportes
+        </NavLink>
+
+        <NavLink to="/ahorros" style={navLinkStyle}>
+          <FaPiggyBank style={styles.icon} />
+          Ahorros
         </NavLink>
       </nav>
     </div>
